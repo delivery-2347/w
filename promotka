@@ -426,7 +426,7 @@ function Kavo.CreateLib(kavName, themeList)
     List.Parent = Holder
     
     -- 🎯 ФУНКЦИЯ
-    function Elements:Notify(title, text, duration)
+    function Library:Notify(title, text, duration)
     	duration = duration or 5
     
     	local theme = themeList
