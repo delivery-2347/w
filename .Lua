@@ -406,6 +406,97 @@ function Kavo.CreateLib(kavName, themeList)
 
     local first = true
 
+    local TweenService = game:GetService("TweenService")
+    local CoreGui = game:GetService("CoreGui")
+    
+    -- контейнер уведомлений (создаётся 1 раз)
+    local NotificationGui = Instance.new("ScreenGui")
+    NotificationGui.Name = "KavoNotifications"
+    NotificationGui.ResetOnSpawn = false
+    NotificationGui.Parent = CoreGui
+    
+    local Holder = Instance.new("Frame")
+    Holder.BackgroundTransparency = 1
+    Holder.Size = UDim2.new(0, 320, 1, 0)
+    Holder.Position = UDim2.new(1, -340, 0, 20)
+    Holder.Parent = NotificationGui
+    
+    local List = Instance.new("UIListLayout")
+    List.Padding = UDim.new(0, 8)
+    List.Parent = Holder
+    
+    -- 🎯 ФУНКЦИЯ
+    function InsideKavo:Notify(title, text, duration)
+    	duration = duration or 5
+    
+    	local theme = themeList
+    
+    	local main = Instance.new("Frame")
+    	main.Size = UDim2.new(1, 0, 0, 70)
+    	main.BackgroundColor3 = theme.ElementColor
+    	main.BorderSizePixel = 0
+    	main.Parent = Holder
+    
+    	local corner = Instance.new("UICorner")
+    	corner.CornerRadius = UDim.new(0, 8)
+    	corner.Parent = main
+    
+    	local accent = Instance.new("Frame")
+    	accent.Size = UDim2.new(1, 0, 0, 3)
+    	accent.BackgroundColor3 = theme.SchemeColor
+    	accent.BorderSizePixel = 0
+    	accent.Parent = main
+    
+    	local titleLabel = Instance.new("TextLabel")
+    	titleLabel.BackgroundTransparency = 1
+    	titleLabel.Position = UDim2.new(0, 10, 0, 8)
+    	titleLabel.Size = UDim2.new(1, -20, 0, 20)
+    	titleLabel.Font = Enum.Font.GothamBold
+    	titleLabel.TextSize = 15
+    	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    	titleLabel.TextColor3 = theme.TextColor
+    	titleLabel.Text = title
+    	titleLabel.Parent = main
+    
+    	local textLabel = Instance.new("TextLabel")
+    	textLabel.BackgroundTransparency = 1
+    	textLabel.Position = UDim2.new(0, 10, 0, 28)
+    	textLabel.Size = UDim2.new(1, -20, 1, -30)
+    	textLabel.Font = Enum.Font.Gotham
+    	textLabel.TextSize = 13
+    	textLabel.TextWrapped = true
+    	textLabel.TextXAlignment = Enum.TextXAlignment.Left
+    	textLabel.TextYAlignment = Enum.TextYAlignment.Top
+    	textLabel.TextColor3 = theme.TextColor
+    	textLabel.Text = text
+    	textLabel.Parent = main
+    
+    	-- старт анимации (въезд справа)
+    	main.Position = UDim2.new(1.2, 0, 0, 0)
+    
+    	TweenService:Create(
+    		main,
+    		TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
+    		{Position = UDim2.new(0, 0, 0, 0)}
+    	):Play()
+    
+    	-- авто удаление
+    	task.delay(duration, function()
+    		local out = TweenService:Create(
+    			main,
+    			TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.In),
+    			{
+    				Position = UDim2.new(1.2, 0, 0, 0),
+    				BackgroundTransparency = 1
+    			}
+    		)
+    
+    		out:Play()
+    		out.Completed:Wait()
+    		main:Destroy()
+    	end)
+    end
+
     function Tabs:NewTab(tabName)
         tabName = tabName or "Tab"
         local tabButton = Instance.new("TextButton")
@@ -2678,3 +2769,5 @@ function Kavo.CreateLib(kavName, themeList)
     return Tabs
 end
 return Kavo
+
+-- https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/.Lua ScreenGui Library NewTab
