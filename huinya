@@ -2769,5 +2769,3 @@ function Kavo.CreateLib(kavName, themeList)
     return Tabs
 end
 return Kavo
-
--- https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/.Lua ScreenGui Library NewTab
