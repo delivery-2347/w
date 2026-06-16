@@ -1,4 +1,4 @@
-local Kavo = {}
+local Kavo = {} -- tabFrames 
 
 local tween = game:GetService("TweenService")
 local tweeninfo = TweenInfo.new
@@ -248,7 +248,7 @@ function Kavo.CreateLib(kavName, themeList)
     local MainSide = Instance.new("Frame")
     local sideCorner = Instance.new("UICorner")
     local coverup_2 = Instance.new("Frame")
-    local tabFrames = Instance.new("Frame")
+    local tabFrames = Instance.new("ScrollingFrame")
     local tabListing = Instance.new("UIListLayout")
     local pages = Instance.new("Frame")
     local Pages = Instance.new("Folder")
@@ -362,9 +362,30 @@ function Kavo.CreateLib(kavName, themeList)
     tabFrames.Position = UDim2.new(0.0438990258, 0, -0.00066378375, 0)
     tabFrames.Size = UDim2.new(0, 135, 0, 283)
 
+    tabFrames.ScrollBarThickness = 4
+    tabFrames.ScrollingDirection = Enum.ScrollingDirection.Y
+    tabFrames.CanvasSize = UDim2.new(0, 0, 0, 0)
+    tabFrames.BorderSizePixel = 0
+    tabFrames.Active = true
+    tabFrames.ClipsDescendants = true
+    tabFrames.ScrollBarThickness = 8
+
     tabListing.Name = "tabListing"
     tabListing.Parent = tabFrames
     tabListing.SortOrder = Enum.SortOrder.LayoutOrder
+    tabListing.Padding = UDim.new(0, 5)
+
+    local function UpdateTabsCanvas()
+    	tabFrames.CanvasSize = UDim2.new(
+    		0,
+    		0,
+    		0,
+    		tabListing.AbsoluteContentSize.Y + 10
+    	)
+    end
+    
+    tabListing:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(UpdateTabsCanvas)
+    task.defer(UpdateTabsCanvas)
 
     pages.Name = "pages"
     pages.Parent = Main
@@ -406,116 +427,12 @@ function Kavo.CreateLib(kavName, themeList)
 
     local first = true
 
-    local TweenService = game:GetService("TweenService")
-    local CoreGui = game:GetService("CoreGui")
-    
-    -- контейнер уведомлений (создаётся 1 раз)
-    local NotificationGui = Instance.new("ScreenGui")
-    NotificationGui.Name = "KavoNotifications"
-    NotificationGui.ResetOnSpawn = false
-    NotificationGui.Parent = CoreGui
-    
-    local Holder = Instance.new("Frame")
-    Holder.BackgroundTransparency = 1
-    Holder.Size = UDim2.new(0, 320, 1, 0)
-    Holder.Position = UDim2.new(1, -340, 0, 20)
-    Holder.Parent = NotificationGui
-    
-    local List = Instance.new("UIListLayout")
-    List.Padding = UDim.new(0, 8)
-    List.Parent = Holder
-    
-    -- 🎯 ФУНКЦИЯ
-    function Notify(title, text, duration)
-    	duration = duration or 5
-    
-    	local theme = themeList
-    
-    	local main = Instance.new("Frame")
-    	main.Size = UDim2.new(1, 0, 0, 70)
-    	main.BackgroundColor3 = theme.ElementColor
-    	main.BorderSizePixel = 0
-    	main.Parent = Holder
-    
-    	local corner = Instance.new("UICorner")
-    	corner.CornerRadius = UDim.new(0, 8)
-    	corner.Parent = main
-    
-    	local accent = Instance.new("Frame")
-    	accent.Size = UDim2.new(1, 0, 0, 3)
-    	accent.BackgroundColor3 = theme.SchemeColor
-    	accent.BorderSizePixel = 0
-    	accent.Parent = main
-    
-    	local titleLabel = Instance.new("TextLabel")
-    	titleLabel.BackgroundTransparency = 1
-    	titleLabel.Position = UDim2.new(0, 10, 0, 8)
-    	titleLabel.Size = UDim2.new(1, -20, 0, 20)
-    	titleLabel.Font = Enum.Font.GothamBold
-    	titleLabel.TextSize = 15
-    	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-    	titleLabel.TextColor3 = theme.TextColor
-    	titleLabel.Text = title
-    	titleLabel.Parent = main
-    
-    	local textLabel = Instance.new("TextLabel")
-    	textLabel.BackgroundTransparency = 1
-    	textLabel.Position = UDim2.new(0, 10, 0, 28)
-    	textLabel.Size = UDim2.new(1, -20, 1, -30)
-    	textLabel.Font = Enum.Font.Gotham
-    	textLabel.TextSize = 13
-    	textLabel.TextWrapped = true
-    	textLabel.TextXAlignment = Enum.TextXAlignment.Left
-    	textLabel.TextYAlignment = Enum.TextYAlignment.Top
-    	textLabel.TextColor3 = theme.TextColor
-    	textLabel.Text = text
-    	textLabel.Parent = main
-    
-    	-- старт анимации (въезд справа)
-    	main.Position = UDim2.new(1.2, 0, 0, 0)
-    
-    	TweenService:Create(
-    		main,
-    		TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
-    		{Position = UDim2.new(0, 0, 0, 0)}
-    	):Play()
-    
-    	-- авто удаление
-    	task.delay(duration, function()
-    		local out = TweenService:Create(
-    			main,
-    			TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.In),
-    			{
-    				Position = UDim2.new(1.2, 0, 0, 0),
-    				BackgroundTransparency = 1
-    			}
-    		)
-    
-    		out:Play()
-    		out.Completed:Wait()
-    		main:Destroy()
-    	end)
-    end
-
     function Tabs:NewTab(tabName)
         tabName = tabName or "Tab"
         local tabButton = Instance.new("TextButton")
         local UICorner = Instance.new("UICorner")
         local page = Instance.new("ScrollingFrame")
         local pageListing = Instance.new("UIListLayout")
-
-        local layout = Instance.new("UIListLayout")
-        layout.Parent = page -- НЕ ScrollingFrame глобальный, а именно page
-        layout.SortOrder = Enum.SortOrder.LayoutOrder
-        layout.Padding = UDim.new(0, 6)
-
-        local function UpdateCanvas()
-            page.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 15)
-        end
-        
-        layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(UpdateCanvas)
-        
-        task.defer(UpdateCanvas)
 
         local function UpdateSize()
             local cS = pageListing.AbsoluteContentSize
@@ -2769,3 +2686,84 @@ function Kavo.CreateLib(kavName, themeList)
     return Tabs
 end
 return Kavo
+
+local TweenService = game:GetService("TweenService")
+local CoreGui = game:GetService("CoreGui")
+
+local NotifyGui = Instance.new("ScreenGui")
+NotifyGui.Name = "NotifyGui"
+NotifyGui.ResetOnSpawn = false
+NotifyGui.Parent = CoreGui
+
+local Holder = Instance.new("Frame")
+Holder.BackgroundTransparency = 1
+Holder.Size = UDim2.new(0, 300, 1, 0)
+Holder.Position = UDim2.new(1, -320, 0, 20)
+Holder.Parent = NotifyGui
+
+local Layout = Instance.new("UIListLayout")
+Layout.Padding = UDim.new(0, 8)
+Layout.Parent = Holder
+
+function Notify(Title, Text, Duration)
+	Duration = Duration or 5
+
+	local Main = Instance.new("Frame")
+	Main.Size = UDim2.new(1, 0, 0, 70)
+	Main.BackgroundColor3 = themeList.ElementColor -- твоя тема
+	Main.BorderSizePixel = 0
+	Main.Parent = Holder
+
+	local Corner = Instance.new("UICorner")
+	Corner.Parent = Main
+
+	local Accent = Instance.new("Frame")
+	Accent.Size = UDim2.new(1,0,0,3)
+	Accent.BackgroundColor3 = themeList.SchemeColor
+	Accent.BorderSizePixel = 0
+	Accent.Parent = Main
+
+	local TitleLabel = Instance.new("TextLabel")
+	TitleLabel.BackgroundTransparency = 1
+	TitleLabel.Position = UDim2.new(0,10,0,8)
+	TitleLabel.Size = UDim2.new(1,-20,0,20)
+	TitleLabel.Font = Enum.Font.GothamBold
+	TitleLabel.TextSize = 15
+	TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+	TitleLabel.TextColor3 = themeList.TextColor
+	TitleLabel.Text = Title
+	TitleLabel.Parent = Main
+
+	local TextLabel = Instance.new("TextLabel")
+	TextLabel.BackgroundTransparency = 1
+	TextLabel.Position = UDim2.new(0,10,0,28)
+	TextLabel.Size = UDim2.new(1,-20,1,-35)
+	TextLabel.Font = Enum.Font.Gotham
+	TextLabel.TextSize = 13
+	TextLabel.TextWrapped = true
+	TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+	TextLabel.TextYAlignment = Enum.TextYAlignment.Top
+	TextLabel.TextColor3 = themeList.TextColor
+	TextLabel.Text = Text
+	TextLabel.Parent = Main
+
+	Main.Position = UDim2.new(1.2,0,0,0)
+
+	TweenService:Create(
+		Main,
+		TweenInfo.new(0.3, Enum.EasingStyle.Quint),
+		{Position = UDim2.new(0,0,0,0)}
+	):Play()
+
+	task.delay(Duration,function()
+		local Out = TweenService:Create(
+			Main,
+			TweenInfo.new(0.3, Enum.EasingStyle.Quint),
+			{Position = UDim2.new(1.2,0,0,0)}
+		)
+
+		Out:Play()
+		Out.Completed:Wait()
+		Main:Destroy()
+	end)
+end
