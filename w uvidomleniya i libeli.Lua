@@ -2736,6 +2736,86 @@ function Kavo.CreateLib(kavName, themeList)
                 	if label.Text ~= "  "..newText then
                 		label.Text = "  "..newText
                 	end
+                    local TweenService = game:GetService("TweenService")
+                    local CoreGui = game:GetService("CoreGui")
+                    
+                    local NotifyGui = Instance.new("ScreenGui")
+                    NotifyGui.Name = "NotifyGui"
+                    NotifyGui.ResetOnSpawn = false
+                    NotifyGui.Parent = CoreGui
+                    
+                    local Holder = Instance.new("Frame")
+                    Holder.BackgroundTransparency = 1
+                    Holder.Size = UDim2.new(0, 300, 1, 0)
+                    Holder.Position = UDim2.new(1, -320, 0, 20)
+                    Holder.Parent = NotifyGui
+                    
+                    local Layout = Instance.new("UIListLayout")
+                    Layout.Padding = UDim.new(0, 8)
+                    Layout.Parent = Holder
+                    
+                    function Notify(Title, Text, Duration)
+                    	Duration = Duration or 5
+                    
+                    	local Main = Instance.new("Frame")
+                    	Main.Size = UDim2.new(1, 0, 0, 70)
+                    	Main.BackgroundColor3 = themeList.ElementColor -- твоя тема
+                    	Main.BorderSizePixel = 0
+                    	Main.Parent = Holder
+                    
+                    	local Corner = Instance.new("UICorner")
+                    	Corner.Parent = Main
+                    
+                    	local Accent = Instance.new("Frame")
+                    	Accent.Size = UDim2.new(1,0,0,3)
+                    	Accent.BackgroundColor3 = themeList.SchemeColor
+                    	Accent.BorderSizePixel = 0
+                    	Accent.Parent = Main
+                    
+                    	local TitleLabel = Instance.new("TextLabel")
+                    	TitleLabel.BackgroundTransparency = 1
+                    	TitleLabel.Position = UDim2.new(0,10,0,8)
+                    	TitleLabel.Size = UDim2.new(1,-20,0,20)
+                    	TitleLabel.Font = Enum.Font.GothamBold
+                    	TitleLabel.TextSize = 15
+                    	TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+                    	TitleLabel.TextColor3 = themeList.TextColor
+                    	TitleLabel.Text = Title
+                    	TitleLabel.Parent = Main
+                    
+                    	local TextLabel = Instance.new("TextLabel")
+                    	TextLabel.BackgroundTransparency = 1
+                    	TextLabel.Position = UDim2.new(0,10,0,28)
+                    	TextLabel.Size = UDim2.new(1,-20,1,-35)
+                    	TextLabel.Font = Enum.Font.Gotham
+                    	TextLabel.TextSize = 13
+                    	TextLabel.TextWrapped = true
+                    	TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+                    	TextLabel.TextYAlignment = Enum.TextYAlignment.Top
+                    	TextLabel.TextColor3 = themeList.TextColor
+                    	TextLabel.Text = Text
+                    	TextLabel.Parent = Main
+                    
+                    	Main.Position = UDim2.new(1.2,0,0,0)
+                    
+                    	TweenService:Create(
+                    		Main,
+                    		TweenInfo.new(0.3, Enum.EasingStyle.Quint),
+                    		{Position = UDim2.new(0,0,0,0)}
+                    	):Play()
+                    
+                    	task.delay(Duration,function()
+                    		local Out = TweenService:Create(
+                    			Main,
+                    			TweenInfo.new(0.3, Enum.EasingStyle.Quint),
+                    			{Position = UDim2.new(1.2,0,0,0)}
+                    		)
+                    
+                    		Out:Play()
+                    		Out.Completed:Wait()
+                    		Main:Destroy()
+                    	end)
+                    end
                 end	
                 return labelFunctions
             end	
