@@ -8,9 +8,9 @@ Notify("Success", "Library loaded!", 5)
 
 <img width="909" height="55" alt="image" src="https://github.com/user-attachments/assets/a21b791f-7261-4d31-b6f2-9cdee2268085" />
 vot premer kak dolzva videdit
-
-local Library = loadstring(game:HttpGet("silka_na_biblioteka"))()
 {
+local Library = loadstring(game:HttpGet("silka_na_biblioteka"))()
+
 local CUCUMBER = {
     SchemeColor = Color3.fromRGB(45, 160, 95),
     Background = Color3.fromRGB(8, 18, 12),
