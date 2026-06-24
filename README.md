@@ -10,7 +10,7 @@ Notify("Success", "Library loaded!", 5)
 vot premer kak dolzva videdit
 
 
-    local Library = loadstring(game:HttpGet("silka_na_biblioteka"))()
+    local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/super%20puper%20optimezison"))()
     
     local CUCUMBER = {
         SchemeColor = Color3.fromRGB(45, 160, 95),
@@ -20,7 +20,7 @@ vot premer kak dolzva videdit
         ElementColor = Color3.fromRGB(18, 55, 38)
     }
     
-    local notice = loadstring(game:HttpGet("silka_na_notice"))(CUCUMBER)
+    local notice = loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/notice.lua"))(CUCUMBER)
     
     local Window = Library.CreateLib("nasalinaya sozdasya skripyov obuseniya", "CUCUMBER")
     
