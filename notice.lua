@@ -1,5 +1,9 @@
+print("NOTICE LOADED")
+
 return function(Theme)
 
+    print("NOTICE INIT")
+    
     local TweenService = game:GetService("TweenService")
     local Players = game:GetService("Players")
 
@@ -12,7 +16,7 @@ return function(Theme)
     ScreenGui.Parent = PlayerGui
 
     return function(Title, Text, Duration)
-
+        print("NOTIFY CALLED", Title, Text)
         Duration = Duration or 5
 
         local Main = Instance.new("Frame")
