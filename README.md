@@ -22,7 +22,7 @@ vot premer kak dolzva videdit
     
     local notice = loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/notice.lua"))(CUCUMBER)
     
-    local Window = Library.CreateLib("nasalinaya sozdasya skripyov obuseniya", "CUCUMBER")
+    local Window = Library.CreateLib("nasalinaya sozdasya skripyov obuseniya",CUCUMBER)
     
     local Tab = Window:NewTab("obuseniya v razrabotka Script")
     
