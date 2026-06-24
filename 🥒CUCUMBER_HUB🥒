@@ -1,0 +1,128 @@
+local CoreGui = game:GetService("CoreGui")
+
+-- удалить старый
+if CoreGui:FindFirstChild("CUCUMBER_HUB") then
+    CoreGui.CUCUMBER_HUB:Destroy()
+end
+
+local Gui = Instance.new("ScreenGui")
+Gui.Name = "CUCUMBER_HUB"
+Gui.ResetOnSpawn = false
+Gui.DisplayOrder = 999999
+Gui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+Gui.Parent = CoreGui
+
+-- 🪟 МЕНЬШЕ ОКНО
+local Main = Instance.new("Frame")
+Main.Size = UDim2.new(0, 380, 0, 240)
+Main.Position = UDim2.new(0.5, -190, 0.5, -120)
+Main.BackgroundColor3 = Color3.fromRGB(8,18,12)
+Main.BorderSizePixel = 0
+Main.Parent = Gui
+
+Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 12)
+
+-- 📌 HEADER (за него будем тянуть)
+local Header = Instance.new("Frame")
+Header.Size = UDim2.new(1,0,0,40)
+Header.BackgroundColor3 = Color3.fromRGB(12,30,20)
+Header.BorderSizePixel = 0
+Header.Parent = Main
+
+Instance.new("UICorner", Header).CornerRadius = UDim.new(0,12)
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1,0,1,0)
+Title.BackgroundTransparency = 1
+Title.Text = "🥒 CUCUMBER HUB"
+Title.TextColor3 = Color3.fromRGB(230,230,230)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 18
+Title.Parent = Header
+
+-- 📦 список
+local Holder = Instance.new("Frame")
+Holder.BackgroundTransparency = 1
+Holder.Position = UDim2.new(0,10,0,50)
+Holder.Size = UDim2.new(1,-20,1,-60)
+Holder.Parent = Main
+
+local Layout = Instance.new("UIListLayout")
+Layout.Padding = UDim.new(0,8)
+Layout.Parent = Holder
+
+-- 🖱️ DRAG SYSTEM
+local UIS = game:GetService("UserInputService")
+
+local dragging = false
+local dragInput
+local dragStart
+local startPos
+
+Header.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = Main.Position
+    end
+end)
+
+Header.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+
+UIS.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        Main.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+-- 🧠 CreateGame
+function CreateGame(name, image, callback)
+    local Button = Instance.new("TextButton")
+    Button.Size = UDim2.new(1,0,0,55)
+    Button.Text = ""
+    Button.BackgroundColor3 = Color3.fromRGB(18,55,38)
+    Button.BorderSizePixel = 0
+    Button.Parent = Holder
+
+    Instance.new("UICorner", Button).CornerRadius = UDim.new(0,10)
+
+    local Label = Instance.new("TextLabel")
+    Label.BackgroundTransparency = 1
+    Label.Size = UDim2.new(1,-10,1,0)
+    Label.Position = UDim2.new(0,10,0,0)
+    Label.TextXAlignment = Enum.TextXAlignment.Left
+    Label.Text = name
+    Label.TextColor3 = Color3.fromRGB(230,230,230)
+    Label.Font = Enum.Font.GothamBold
+    Label.TextSize = 16
+    Label.Parent = Button
+
+    Button.MouseButton1Click:Connect(function()
+        Gui:Destroy()
+        callback()
+    end)
+end
+
+CreateGame("🥒 CUCUMBER HUB🥒", 0, function()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/script-hub/refs/heads/main/%F0%9F%A5%92%20CUCUMBER%20HUB%20%F0%9F%A5%92"))()
+end)
+
+CreateGame("🥒 CUCUMBER_ftap HUB 🥒", 0, function()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/script-hub/refs/heads/main/%F0%9F%A5%92%20CUCUMBER_ftap%20HUB%20%F0%9F%A5%92"))()
+end)
+
+CreateGame("🥒 Cucumber_BEBFT Hub 🥒", 0, function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/script-hub/refs/heads/main/%F0%9F%A5%92Cucumber_BEBFT%20Hub%F0%9F%A5%92"))()
+end)
+
+--
