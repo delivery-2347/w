@@ -20,7 +20,7 @@ vot premer kak dolzva videdit
         ElementColor = Color3.fromRGB(18, 55, 38)
     }
     
-    local notice = loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/notice.lua"))(CUCUMBER)
+    local Notice = loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/notice.lua"))(CUCUMBER)
     
     local Window = Library.CreateLib("nasalinaya sozdasya skripyov obuseniya",CUCUMBER)
     
