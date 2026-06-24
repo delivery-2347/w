@@ -10,7 +10,7 @@ Notify("Success", "Library loaded!", 5)
 vot premer kak dolzva videdit
 
 local Library = loadstring(game:HttpGet("silka_na_biblioteka"))()
-
+{
 local CUCUMBER = {
     SchemeColor = Color3.fromRGB(45, 160, 95),
     Background = Color3.fromRGB(8, 18, 12),
@@ -30,3 +30,4 @@ local Section = Tab:NewSection("by DELIVERY")
 Section:NewButton("lol", "ButtololnInfo", function()
     Notify("ezz", "lol loaded!", 5)
 end)
+}
