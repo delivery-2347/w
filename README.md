@@ -2,13 +2,12 @@
 ц ызуув щкшпутщд https://github.com/Robojini/Tuturial_UI/
 ](https://github.com/Robojini/Tuturial_UI/blob/main/UI_Template_1)
 TUT DOBAVIL NO YA ISO NE TESTIL
-Notify("Success", "Library loaded!", 5)
+Notice(tvoya_tema, "ezz", "loaded", 5)
 
 
 
 <img width="909" height="55" alt="image" src="https://github.com/user-attachments/assets/a21b791f-7261-4d31-b6f2-9cdee2268085" />
 vot premer kak dolzva videdit
-
 
     local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/ekspement%20s%20size.Lua"))()
     
