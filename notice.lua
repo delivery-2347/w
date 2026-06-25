@@ -16,15 +16,25 @@ return function(Theme)
     ScreenGui.Parent = PlayerGui
 
     return function(Title, Text, Duration)
-        print("NOTIFY CALLED", Title, Text)
+
+        print("1")
+
         Duration = Duration or 5
 
         local Main = Instance.new("Frame")
+        print("2")
+
         Main.Size = UDim2.new(0, 280, 0, 80)
+        print("3")
+
         Main.Position = UDim2.new(1, 300, 1, -100)
+        print("4")
+
         Main.BackgroundColor3 = Theme.Background
-        Main.BorderSizePixel = 0
+        print("5")
+
         Main.Parent = ScreenGui
+        print("6")
 
         local Corner = Instance.new("UICorner")
         Corner.CornerRadius = UDim.new(0, 8)
