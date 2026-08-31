@@ -1,4 +1,4 @@
-local Legion = {}
+local Legion = {} -------
 
 local tween = game:GetService("TweenService")
 local tweeninfo = TweenInfo.new
@@ -27,6 +27,7 @@ function Utility:TweenObject(obj, properties, duration, ...)
     return t
 end
 
+-- 20 проверенных шрифтов Roblox
 local AvailableFontNames = {
     "Gotham", "GothamSemibold", "GothamBold", "GothamBlack",
     "SourceSans", "SourceSansSemibold", "SourceSansBold",
@@ -145,7 +146,6 @@ end
 
 local LibName = "LegionLib_" .. tostring(math.random(1000, 9999))
 
--- Функция создания окна (поддерживает вызовы и через точку, и через двоеточие)
 function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderName)
     local legionName
     if type(selfOrName) == "table" and (selfOrName == Legion or selfOrName.CreateLib) then
@@ -194,10 +194,7 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
     end
 
     local guiParent = getGuiParent()
-    if not guiParent then
-        warn("[Legion UI] Не удалось найти родительский контейнер для GUI!")
-        return nil
-    end
+    if not guiParent then return nil end
 
     for _, v in pairs(guiParent:GetChildren()) do
         if v:IsA("ScreenGui") and v.Name:find("LegionLib_") then
@@ -243,6 +240,7 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
     local allToggles = {}
     local allConfigElements = {}
     local activeConnections = {}
+    local tabButtonsList = {}
 
     Legion:DraggingEnabled(MainHeader, Main)
 
@@ -395,6 +393,7 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
     end)
     table.insert(activeConnections, keyConn)
 
+    -- Шапка
     MainHeader.Name = "MainHeader"
     MainHeader.Parent = Main
     MainHeader.BackgroundColor3 = currentTheme.Header
@@ -472,6 +471,7 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
     settingsBtn.ScaleType = Enum.ScaleType.Fit
     settingsBtn.ImageColor3 = currentTheme.SchemeColor
 
+    -- Боковая панель
     MainSide.Name = "MainSide"
     MainSide.Parent = Main
     MainSide.BackgroundColor3 = currentTheme.Header
@@ -613,7 +613,9 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
         end
     end
 
-    -- Настройки
+    -- =========================================================
+    -- ⚙️ ОКНО НАСТРОЕК (SETTINGS OVERLAY)
+    -- =========================================================
     local settingsOverlay = Instance.new("Frame")
     local settingsScroll = Instance.new("ScrollingFrame")
     local settingsListing = Instance.new("UIListLayout")
@@ -646,11 +648,22 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
 
     local isSettingsOpened = false
     local currentActivePage = nil
+    local lastActiveTabBtn = nil
 
     settingsBtn.MouseButton1Click:Connect(function()
         isSettingsOpened = not isSettingsOpened
         settingsOverlay.Visible = isSettingsOpened
+
         if isSettingsOpened then
+            -- Снимаем подсветку с активного таба
+            for _, btn in pairs(tabButtonsList) do
+                if btn.BackgroundTransparency < 0.9 then
+                    lastActiveTabBtn = btn
+                end
+                Utility:TweenObject(btn, {BackgroundTransparency = 1}, 0.2)
+            end
+            Utility:TweenObject(settingsBtn, {ImageTransparency = 0}, 0.2)
+
             for _, p in pairs(Pages:GetChildren()) do
                 if p.Visible then
                     currentActivePage = p
@@ -659,6 +672,10 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
             end
             updateSettingsCanvas()
         else
+            -- Возвращаем подсветку активному табу
+            if lastActiveTabBtn then
+                Utility:TweenObject(lastActiveTabBtn, {BackgroundTransparency = 0.3}, 0.2)
+            end
             if currentActivePage then
                 currentActivePage.Visible = true
             end
@@ -753,6 +770,7 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
         return box
     end
 
+    -- 2D Палитра цветов + Слайдер яркости + Копирование/Вставка RGB
     local function createSettingsColorPicker(colorName, currentColorKey)
         local frame = Instance.new("Frame")
         local corner = Instance.new("UICorner")
@@ -782,6 +800,8 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
         table.insert(ThemeSubscribers.TextColor, label)
 
         local currentC = currentTheme[currentColorKey]
+        local currentH, currentS, currentV = Color3.toHSV(currentC)
+
         rgbLabel.Parent = frame
         rgbLabel.BackgroundTransparency = 1.000
         rgbLabel.Position = UDim2.new(0, 10, 0, 22)
@@ -802,49 +822,136 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
         previewCorner.CornerRadius = UDim.new(1, 0)
         previewCorner.Parent = colorPreview
 
+        -- Контейнер палитры
         local pickerFrame = Instance.new("Frame")
         local pCorner = Instance.new("UICorner")
-
         pickerFrame.Parent = settingsScroll
         pickerFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-        pickerFrame.Size = UDim2.new(1, -6, 0, 40)
+        pickerFrame.Size = UDim2.new(1, -6, 0, 145)
         pickerFrame.Visible = false
 
         pCorner.CornerRadius = UDim.new(0, 4)
         pCorner.Parent = pickerFrame
 
-        local function makeNumBox(pX, defaultVal)
-            local b = Instance.new("TextBox")
-            local c = Instance.new("UICorner")
-            b.Parent = pickerFrame
-            b.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-            b.Position = UDim2.new(pX, 0, 0.15, 0)
-            b.Size = UDim2.new(0.2, 0, 0.7, 0)
-            b.Font = Enum.Font.Gotham
-            b.Text = tostring(defaultVal)
-            b.TextColor3 = Color3.fromRGB(255, 255, 255)
-            b.TextSize = 12
-            c.CornerRadius = UDim.new(0, 3)
-            c.Parent = b
-            return b
-        end
+        -- 2D Палитра цветов (Цветной спектр)
+        local rgbMap = Instance.new("ImageButton")
+        local mapCorner = Instance.new("UICorner")
+        local mapCursor = Instance.new("Frame")
+        local curCorner = Instance.new("UICorner")
 
-        local rSlider = makeNumBox(0.04, math.floor(currentC.R * 255))
-        local gSlider = makeNumBox(0.28, math.floor(currentC.G * 255))
-        local bSlider = makeNumBox(0.52, math.floor(currentC.B * 255))
+        rgbMap.Parent = pickerFrame
+        rgbMap.Position = UDim2.new(0.04, 0, 0.08, 0)
+        rgbMap.Size = UDim2.new(0.72, 0, 0.65, 0)
+        rgbMap.Image = "http://www.roblox.com/asset/?id=6523286724"
 
+        mapCorner.CornerRadius = UDim.new(0, 3)
+        mapCorner.Parent = rgbMap
+
+        mapCursor.Parent = rgbMap
+        mapCursor.Size = UDim2.new(0, 8, 0, 8)
+        mapCursor.AnchorPoint = Vector2.new(0.5, 0.5)
+        mapCursor.Position = UDim2.new(1 - currentH, 0, 1 - currentS, 0)
+        mapCursor.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        mapCursor.BorderSizePixel = 0
+
+        curCorner.CornerRadius = UDim.new(1, 0)
+        curCorner.Parent = mapCursor
+
+        -- Слайдер яркости
+        local valBar = Instance.new("ImageButton")
+        local valCorner = Instance.new("UICorner")
+        local valCursor = Instance.new("Frame")
+        local vCurCorner = Instance.new("UICorner")
+
+        valBar.Parent = pickerFrame
+        valBar.Position = UDim2.new(0.8, 0, 0.08, 0)
+        valBar.Size = UDim2.new(0.16, 0, 0.65, 0)
+        valBar.Image = "http://www.roblox.com/asset/?id=6523291212"
+
+        valCorner.CornerRadius = UDim.new(0, 3)
+        valCorner.Parent = valBar
+
+        valCursor.Parent = valBar
+        valCursor.Size = UDim2.new(1, 4, 0, 4)
+        valCursor.AnchorPoint = Vector2.new(0.5, 0.5)
+        valCursor.Position = UDim2.new(0.5, 0, 1 - currentV, 0)
+        valCursor.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        valCursor.BorderSizePixel = 0
+
+        vCurCorner.CornerRadius = UDim.new(1, 0)
+        vCurCorner.Parent = valCursor
+
+        -- Поле ввода/копирования RGB
+        local rgbBox = Instance.new("TextBox")
+        local boxCorner = Instance.new("UICorner")
         local applyBtn = Instance.new("TextButton")
+        local apCorner = Instance.new("UICorner")
+
+        rgbBox.Parent = pickerFrame
+        rgbBox.Position = UDim2.new(0.04, 0, 0.77, 0)
+        rgbBox.Size = UDim2.new(0.68, 0, 0.18, 0)
+        rgbBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+        rgbBox.Font = Enum.Font.Gotham
+        rgbBox.Text = string.format("%d, %d, %d", math.floor(currentC.R * 255), math.floor(currentC.G * 255), math.floor(currentC.B * 255))
+        rgbBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+        rgbBox.TextSize = 12
+
+        boxCorner.CornerRadius = UDim.new(0, 3)
+        boxCorner.Parent = rgbBox
+
         applyBtn.Parent = pickerFrame
-        applyBtn.Position = UDim2.new(0.76, 0, 0.15, 0)
-        applyBtn.Size = UDim2.new(0.2, 0, 0.7, 0)
+        applyBtn.Position = UDim2.new(0.76, 0, 0.77, 0)
+        applyBtn.Size = UDim2.new(0.2, 0, 0.18, 0)
         applyBtn.BackgroundColor3 = currentTheme.SchemeColor
         applyBtn.Font = Enum.Font.GothamBold
         applyBtn.Text = "Set"
         applyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        applyBtn.TextSize = 12
-        local apCorner = Instance.new("UICorner")
+        applyBtn.TextSize = 11
+
         apCorner.CornerRadius = UDim.new(0, 3)
         apCorner.Parent = applyBtn
+
+        local function updateColorVisuals(c)
+            currentC = c
+            currentTheme[currentColorKey] = c
+            colorPreview.BackgroundColor3 = c
+            local r, g, b = math.floor(c.R * 255), math.floor(c.G * 255), math.floor(c.B * 255)
+            rgbLabel.Text = string.format("%d, %d, %d", r, g, b)
+            rgbBox.Text = string.format("%d, %d, %d", r, g, b)
+            applyThemeUpdate()
+        end
+
+        local mapDragging = false
+        local valDragging = false
+
+        rgbMap.MouseButton1Down:Connect(function() mapDragging = true end)
+        valBar.MouseButton1Down:Connect(function() valDragging = true end)
+
+        input.InputEnded:Connect(function(inp)
+            if inp.UserInputType == Enum.UserInputType.MouseButton1 or inp.UserInputType == Enum.UserInputType.Touch then
+                mapDragging = false
+                valDragging = false
+            end
+        end)
+
+        input.InputChanged:Connect(function(inp)
+            if (inp.UserInputType == Enum.UserInputType.MouseMovement or inp.UserInputType == Enum.UserInputType.Touch) and pickerFrame.Visible then
+                local mPos = input:GetMouseLocation()
+                if mapDragging then
+                    local x = math.clamp((mPos.X - rgbMap.AbsolutePosition.X) / rgbMap.AbsoluteSize.X, 0, 1)
+                    local y = math.clamp((mPos.Y - (rgbMap.AbsolutePosition.Y + 36)) / rgbMap.AbsoluteSize.Y, 0, 1)
+                    mapCursor.Position = UDim2.new(x, 0, y, 0)
+                    currentH = 1 - x
+                    currentS = 1 - y
+                    updateColorVisuals(Color3.fromHSV(currentH, currentS, currentV))
+                elseif valDragging then
+                    local y = math.clamp((mPos.Y - (valBar.AbsolutePosition.Y + 36)) / valBar.AbsoluteSize.Y, 0, 1)
+                    valCursor.Position = UDim2.new(0.5, 0, y, 0)
+                    currentV = 1 - y
+                    updateColorVisuals(Color3.fromHSV(currentH, currentS, currentV))
+                end
+            end
+        end)
 
         colorPreview.MouseButton1Click:Connect(function()
             pickerFrame.Visible = not pickerFrame.Visible
@@ -852,14 +959,14 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
         end)
 
         applyBtn.MouseButton1Click:Connect(function()
-            local r = math.clamp(tonumber(rSlider.Text) or 0, 0, 255)
-            local g = math.clamp(tonumber(gSlider.Text) or 0, 0, 255)
-            local b = math.clamp(tonumber(bSlider.Text) or 0, 0, 255)
-            local newC = Color3.fromRGB(r, g, b)
-            currentTheme[currentColorKey] = newC
-            colorPreview.BackgroundColor3 = newC
-            rgbLabel.Text = string.format("%d, %d, %d", r, g, b)
-            applyThemeUpdate()
+            local r, g, b = rgbBox.Text:match("(%d+)[,%s]+(%d+)[,%s]+(%d+)")
+            if r and g and b then
+                local nc = Color3.fromRGB(math.clamp(tonumber(r), 0, 255), math.clamp(tonumber(g), 0, 255), math.clamp(tonumber(b), 0, 255))
+                currentH, currentS, currentV = Color3.toHSV(nc)
+                mapCursor.Position = UDim2.new(1 - currentH, 0, 1 - currentS, 0)
+                valCursor.Position = UDim2.new(0.5, 0, 1 - currentV, 0)
+                updateColorVisuals(nc)
+            end
             pickerFrame.Visible = false
             updateSettingsCanvas()
         end)
@@ -1182,7 +1289,9 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
         end
     end)
 
-    -- Вкладки
+    -- =========================================================
+    -- 📑 ОСНОВНЫЕ ВКЛАДКИ (TABS)
+    -- =========================================================
     local Tabs = {}
     local tabCount = 0
     local hasDefaultSelected = false
@@ -1239,6 +1348,7 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
         tabButton.Text = ""
         tabButton.ZIndex = 3
         table.insert(ThemeSubscribers.SchemeColor, tabButton)
+        table.insert(tabButtonsList, tabButton)
 
         UICorner.CornerRadius = UDim.new(0, 4)
         UICorner.Parent = tabButton
@@ -1317,8 +1427,9 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
 
         if isSelected then
             page.Visible = true
-            tabButton.BackgroundTransparency = 0
+            tabButton.BackgroundTransparency = 0.3 -- Мягкая прозрачность подсветки
             currentActivePage = page
+            lastActiveTabBtn = tabButton
         else
             page.Visible = false
             tabButton.BackgroundTransparency = 1
@@ -1338,24 +1449,25 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
             end
             page.Visible = true
             currentActivePage = page
+            lastActiveTabBtn = tabButton
 
             for _, v in pairs(tabFrames:GetChildren()) do
                 if v:IsA("TextButton") then
                     Utility:TweenObject(v, {BackgroundTransparency = 1}, 0.2)
                 end
             end
-            Utility:TweenObject(tabButton, {BackgroundTransparency = 0}, 0.2)
+            Utility:TweenObject(tabButton, {BackgroundTransparency = 0.3}, 0.2)
             UpdateSize()
         end)
 
         tabButton.MouseEnter:Connect(function()
-            if page.Visible == false then
-                Utility:TweenObject(tabButton, {BackgroundTransparency = 0.6}, 0.15)
+            if page.Visible == false or settingsOverlay.Visible then
+                Utility:TweenObject(tabButton, {BackgroundTransparency = 0.7}, 0.15)
             end
         end)
 
         tabButton.MouseLeave:Connect(function()
-            if page.Visible == false then
+            if page.Visible == false or settingsOverlay.Visible then
                 Utility:TweenObject(tabButton, {BackgroundTransparency = 1}, 0.15)
             end
         end)
@@ -1427,6 +1539,7 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
 
             local Elements = {}
 
+            -- Кнопка с Ripple-эффектом
             function Elements:NewButton(bname, tipINf, callback)
                 bname = bname or "Button"
                 callback = callback or function() end
@@ -1525,6 +1638,7 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
                 updateSectionFrame()
             end
 
+            -- Переключатель (Toggle)
             function Elements:NewToggle(tname, tip, callback)
                 tname = tname or "Toggle"
                 callback = callback or function() end
@@ -1623,6 +1737,256 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
                 updateSectionFrame()
             end
 
+            -- =========================================================
+            -- 🎚️ ИНТЕРАКТИВНЫЙ СЛАЙДЕР С ЛИНИЕЙ И КРУГЛЯШКОМ
+            -- =========================================================
+            function Elements:NewSlider(slidName, tipInfo, minVal, maxVal, defaultVal, callback)
+                slidName = slidName or "Slider"
+                minVal = minVal or 0
+                maxVal = maxVal or 100
+                defaultVal = defaultVal or minVal
+                callback = callback or function() end
+
+                local sliderElement = Instance.new("TextButton")
+                local UICorner = Instance.new("UICorner")
+                local slidTitle = Instance.new("TextLabel")
+                local valLabel = Instance.new("TextLabel")
+                local barTrack = Instance.new("TextButton")
+                local trackCorner = Instance.new("UICorner")
+                local fillLine = Instance.new("Frame")
+                local fillCorner = Instance.new("UICorner")
+                local thumbCircle = Instance.new("Frame")
+                local thumbCorner = Instance.new("UICorner")
+
+                sliderElement.Name = slidName
+                sliderElement.Parent = sectionInners
+                sliderElement.BackgroundColor3 = currentTheme.ElementColor
+                sliderElement.Size = UDim2.new(1, 0, 0, 42)
+                sliderElement.AutoButtonColor = false
+                sliderElement.Text = ""
+                sliderElement.ZIndex = 3
+                table.insert(ThemeSubscribers.ElementColor, sliderElement)
+
+                UICorner.CornerRadius = UDim.new(0, 4)
+                UICorner.Parent = sliderElement
+
+                slidTitle.Name = "slidTitle"
+                slidTitle.Parent = sliderElement
+                slidTitle.BackgroundTransparency = 1.000
+                slidTitle.Position = UDim2.new(0, 10, 0, 4)
+                slidTitle.Size = UDim2.new(0.65, 0, 0, 18)
+                slidTitle.Font = currentFont
+                slidTitle.Text = slidName
+                slidTitle.TextColor3 = currentTheme.TextColor
+                slidTitle.TextSize = 13.000
+                slidTitle.TextXAlignment = Enum.TextXAlignment.Left
+                slidTitle.ZIndex = 4
+                table.insert(FontLabels, slidTitle)
+                table.insert(ThemeSubscribers.TextColor, slidTitle)
+
+                valLabel.Name = "valLabel"
+                valLabel.Parent = sliderElement
+                valLabel.BackgroundTransparency = 1.000
+                valLabel.Position = UDim2.new(0.7, 0, 0, 4)
+                valLabel.Size = UDim2.new(0.3, -10, 0, 18)
+                valLabel.Font = Enum.Font.GothamBold
+                valLabel.Text = tostring(defaultVal)
+                valLabel.TextColor3 = currentTheme.SchemeColor
+                valLabel.TextSize = 13.000
+                valLabel.TextXAlignment = Enum.TextXAlignment.Right
+                valLabel.ZIndex = 4
+                table.insert(ThemeSubscribers.SchemeColor, valLabel)
+
+                -- Серая фоновая полоса
+                barTrack.Name = "barTrack"
+                barTrack.Parent = sliderElement
+                barTrack.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+                barTrack.Position = UDim2.new(0, 10, 0, 26)
+                barTrack.Size = UDim2.new(1, -20, 0, 6)
+                barTrack.AutoButtonColor = false
+                barTrack.Text = ""
+                barTrack.ZIndex = 4
+
+                trackCorner.CornerRadius = UDim.new(1, 0)
+                trackCorner.Parent = barTrack
+
+                -- Цветная линия прогресса (тема)
+                fillLine.Name = "fillLine"
+                fillLine.Parent = barTrack
+                fillLine.BackgroundColor3 = currentTheme.SchemeColor
+                fillLine.Size = UDim2.new(0, 0, 1, 0)
+                fillLine.BorderSizePixel = 0
+                fillLine.ZIndex = 5
+                table.insert(ThemeSubscribers.SchemeColor, fillLine)
+
+                fillCorner.CornerRadius = UDim.new(1, 0)
+                fillCorner.Parent = fillLine
+
+                -- Кругляшок на конце линии
+                thumbCircle.Name = "thumbCircle"
+                thumbCircle.Parent = fillLine
+                thumbCircle.AnchorPoint = Vector2.new(0.5, 0.5)
+                thumbCircle.Position = UDim2.new(1, 0, 0.5, 0)
+                thumbCircle.Size = UDim2.new(0, 12, 0, 12)
+                thumbCircle.BackgroundColor3 = currentTheme.SchemeColor
+                thumbCircle.BorderSizePixel = 0
+                thumbCircle.ZIndex = 6
+                table.insert(ThemeSubscribers.SchemeColor, thumbCircle)
+
+                thumbCorner.CornerRadius = UDim.new(1, 0)
+                thumbCorner.Parent = thumbCircle
+
+                local currentVal = defaultVal
+
+                local function updateSlider(val)
+                    currentVal = math.clamp(val, minVal, maxVal)
+                    local percent = (currentVal - minVal) / (maxVal - minVal)
+                    fillLine.Size = UDim2.new(percent, 0, 1, 0)
+                    valLabel.Text = tostring(math.floor(currentVal))
+                    pcall(callback, math.floor(currentVal))
+                end
+
+                updateSlider(defaultVal)
+
+                local isSliding = false
+
+                local function slide(inputObj)
+                    local trackX = barTrack.AbsolutePosition.X
+                    local trackW = barTrack.AbsoluteSize.X
+                    local mouseX = inputObj.Position.X
+                    local percent = math.clamp((mouseX - trackX) / trackW, 0, 1)
+                    local newVal = minVal + (maxVal - minVal) * percent
+                    updateSlider(newVal)
+                end
+
+                barTrack.InputBegan:Connect(function(inputObj)
+                    if inputObj.UserInputType == Enum.UserInputType.MouseButton1 or inputObj.UserInputType == Enum.UserInputType.Touch then
+                        isSliding = true
+                        slide(inputObj)
+                    end
+                end)
+
+                sliderElement.InputBegan:Connect(function(inputObj)
+                    if inputObj.UserInputType == Enum.UserInputType.MouseButton1 or inputObj.UserInputType == Enum.UserInputType.Touch then
+                        isSliding = true
+                        slide(inputObj)
+                    end
+                end)
+
+                input.InputEnded:Connect(function(inputObj)
+                    if inputObj.UserInputType == Enum.UserInputType.MouseButton1 or inputObj.UserInputType == Enum.UserInputType.Touch then
+                        isSliding = false
+                    end
+                end)
+
+                input.InputChanged:Connect(function(inputObj)
+                    if isSliding and (inputObj.UserInputType == Enum.UserInputType.MouseMovement or inputObj.UserInputType == Enum.UserInputType.Touch) then
+                        slide(inputObj)
+                    end
+                end)
+
+                allConfigElements[slidName] = {
+                    get = function() return currentVal end,
+                    set = function(val) updateSlider(val) end
+                }
+
+                updateSectionFrame()
+            end
+
+            -- =========================================================
+            -- 📝 ПОЛЕ ВВОДА ТЕКСТА (2 РЕЖИМА: ClearOnFocus true/false)
+            -- =========================================================
+            function Elements:NewInput(inpName, placeholder, defaultText, clearOnFocus, callback)
+                inpName = inpName or "Input"
+                placeholder = placeholder or "Type here..."
+                defaultText = defaultText or ""
+                if clearOnFocus == nil then clearOnFocus = false end
+                callback = callback or function() end
+
+                local inputElement = Instance.new("Frame")
+                local UICorner = Instance.new("UICorner")
+                local inpTitle = Instance.new("TextLabel")
+                local textBoxFrame = Instance.new("Frame")
+                local tbCorner = Instance.new("UICorner")
+                local tbStroke = Instance.new("UIStroke")
+                local textBox = Instance.new("TextBox")
+
+                inputElement.Name = inpName
+                inputElement.Parent = sectionInners
+                inputElement.BackgroundColor3 = currentTheme.ElementColor
+                inputElement.Size = UDim2.new(1, 0, 0, 36)
+                inputElement.ZIndex = 3
+                table.insert(ThemeSubscribers.ElementColor, inputElement)
+
+                UICorner.CornerRadius = UDim.new(0, 4)
+                UICorner.Parent = inputElement
+
+                inpTitle.Name = "inpTitle"
+                inpTitle.Parent = inputElement
+                inpTitle.BackgroundTransparency = 1.000
+                inpTitle.Position = UDim2.new(0, 10, 0, 0)
+                inpTitle.Size = UDim2.new(0.45, 0, 1, 0)
+                inpTitle.Font = currentFont
+                inpTitle.Text = inpName
+                inpTitle.TextColor3 = currentTheme.TextColor
+                inpTitle.TextSize = 13.000
+                inpTitle.TextXAlignment = Enum.TextXAlignment.Left
+                inpTitle.ZIndex = 4
+                table.insert(FontLabels, inpTitle)
+                table.insert(ThemeSubscribers.TextColor, inpTitle)
+
+                textBoxFrame.Name = "textBoxFrame"
+                textBoxFrame.Parent = inputElement
+                textBoxFrame.AnchorPoint = Vector2.new(1, 0.5)
+                textBoxFrame.Position = UDim2.new(1, -8, 0.5, 0)
+                textBoxFrame.Size = UDim2.new(0.5, 0, 0, 24)
+                textBoxFrame.BackgroundColor3 = Color3.fromRGB(28, 28, 32)
+                textBoxFrame.ZIndex = 4
+
+                tbCorner.CornerRadius = UDim.new(0, 4)
+                tbCorner.Parent = textBoxFrame
+
+                tbStroke.Thickness = 1
+                tbStroke.Color = Color3.fromRGB(45, 45, 50)
+                tbStroke.Parent = textBoxFrame
+
+                textBox.Parent = textBoxFrame
+                textBox.BackgroundTransparency = 1.000
+                textBox.Position = UDim2.new(0, 6, 0, 0)
+                textBox.Size = UDim2.new(1, -12, 1, 0)
+                textBox.Font = Enum.Font.Gotham
+                textBox.PlaceholderText = placeholder
+                textBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
+                textBox.Text = defaultText
+                textBox.TextColor3 = currentTheme.TextColor
+                textBox.TextSize = 12.000
+                textBox.TextXAlignment = Enum.TextXAlignment.Left
+                textBox.ClearTextOnFocus = clearOnFocus -- Управление стиранием текста при клике
+                textBox.ZIndex = 5
+
+                textBox.Focused:Connect(function()
+                    Utility:TweenObject(tbStroke, {Color = currentTheme.SchemeColor}, 0.15)
+                end)
+
+                textBox.FocusLost:Connect(function()
+                    Utility:TweenObject(tbStroke, {Color = Color3.fromRGB(45, 45, 50)}, 0.15)
+                    pcall(callback, textBox.Text)
+                end)
+
+                allConfigElements[inpName] = {
+                    get = function() return textBox.Text end,
+                    set = function(val) textBox.Text = tostring(val) end
+                }
+
+                updateSectionFrame()
+            end
+
+            -- Совместимость с NewTextBox
+            Elements.NewTextBox = Elements.NewInput
+
+            -- =========================================================
+            -- 📋 ДРОПДАУН С ИСПРАВЛЕННОЙ ПОДСВЕТКОЙ ВЫБРАННОГО ПУНКТА
+            -- =========================================================
             function Elements:NewDropdown(dropName, list, defaultItems, isMultiOrCallback, callback)
                 dropName = dropName or "Dropdown"
                 list = list or {}
@@ -1758,7 +2122,8 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
 
                         optBtn.Name = "Option_" .. itemStr
                         optBtn.Parent = optionContainer
-                        optBtn.BackgroundColor3 = isSelected and Color3.fromRGB(currentTheme.ElementColor.r * 255 + 10, currentTheme.ElementColor.g * 255 + 10, currentTheme.ElementColor.b * 255 + 10) or Color3.fromRGB(currentTheme.ElementColor.r * 255 + 4, currentTheme.ElementColor.g * 255 + 4, currentTheme.ElementColor.b * 255 + 4)
+                        optBtn.BackgroundColor3 = isSelected and currentTheme.SchemeColor or Color3.fromRGB(28, 28, 32)
+                        optBtn.BackgroundTransparency = isSelected and 0.35 or 0 -- Четкая подсветка выбранного
                         optBtn.Size = UDim2.new(1, 0, 0, 26)
                         optBtn.AutoButtonColor = false
                         optBtn.Font = currentFont
@@ -1788,14 +2153,11 @@ function Legion.CreateLib(selfOrName, themeList, iconId, toggleKey, rootFolderNa
                                 local foundIndex = table.find(selectedList, itemStr)
                                 if foundIndex then
                                     table.remove(selectedList, foundIndex)
-                                    Utility:TweenObject(checkIndicator, {BackgroundColor3 = Color3.fromRGB(50, 50, 55)}, 0.15)
-                                    Utility:TweenObject(optBtn, {TextColor3 = currentTheme.TextColor}, 0.15)
                                 else
                                     table.insert(selectedList, itemStr)
-                                    Utility:TweenObject(checkIndicator, {BackgroundColor3 = currentTheme.SchemeColor}, 0.15)
-                                    Utility:TweenObject(optBtn, {TextColor3 = Color3.fromRGB(255, 255, 255)}, 0.15)
                                 end
                                 dropTitle.Text = getDisplayText()
+                                renderOptions(itemList)
                                 pcall(callback, selectedList)
                             else
                                 selectedList = {itemStr}
