@@ -105,22 +105,6 @@ true
 false
 ```
 
-### Изменение значения
-
-```lua
-local Toggle = Section:NewToggle("Enabled", "Описание", function(state)
-    print(state)
-end)
-
-Toggle:UpdateToggle(true)
-```
-
-### Изменение названия
-
-Название можно изменить через параметры обновления toggle.
-
----
-
 # 🎚️ Slider
 
 ```lua
