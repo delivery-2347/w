@@ -2690,17 +2690,17 @@ function Kavo.CreateLib(kavName, themeList)
 		        end)()
                 updateSectionFrame()
                 UpdateSize()
-                function labelFunctions:UpdateLabel(newText)
-                	if label.Text ~= "  "..newText then
-                		label.Text = "  "..newText
-                	end
+function labelFunctions:UpdateLabel(newText)
+                        if label.Text ~= "  "..newText then
+                            label.Text = "  "..newText
+                        end
+                    end	
+                    return labelFunctions
                 end	
-                return labelFunctions
-            end	
-            return Elements
-        end
-        return Sections
-    end  
-    return Tabs
-end
-return Kavo
+                return Elements
+            end
+            return Sections
+        end  
+        return Tabs
+    end
+    return Kavo
