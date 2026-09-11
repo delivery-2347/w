@@ -1,4 +1,4 @@
-local Kavo = {} --88
+local Kavo = {} --
 
 local tween = game:GetService("TweenService")
 local tweeninfo = TweenInfo.new
