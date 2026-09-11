@@ -1,4 +1,4 @@
-local Kavo = {}
+local Kavo = {} --88
 
 local tween = game:GetService("TweenService")
 local tweeninfo = TweenInfo.new
@@ -1330,7 +1330,7 @@ function Kavo.CreateLib(kavName, themeList)
                 sliderDrag.BackgroundColor3 = themeList.SchemeColor
                 sliderDrag.BorderColor3 = Color3.fromRGB(74, 99, 135)
                 sliderDrag.BorderSizePixel = 0
-                sliderDrag.Size = UDim2.new(-0.671140969, 100,1,0)
+                sliderDrag.Size = UDim2.new(-0.671140969, 100, 1, 0)
 
                 UICorner_3.Parent = sliderDrag
 
@@ -1385,16 +1385,14 @@ function Kavo.CreateLib(kavName, themeList)
                     Utility:TweenObject(moreInfo, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
                 end 
 
-
-                                updateSectionFrame()
+                updateSectionFrame()
                 UpdateSize()
-                local mouse = game:GetService("Players").LocalPlayer:GetMouse();
 
-                local ms = game.Players.LocalPlayer:GetMouse()
+                local mouse = game:GetService("Players").LocalPlayer:GetMouse()
                 local uis = game:GetService("UserInputService")
                 local btn = sliderElement
-                local infBtn = viewInfo
                 local hovering = false
+
                 btn.MouseEnter:Connect(function()
                     if not focusing then
                         game.TweenService:Create(btn, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
@@ -1429,6 +1427,9 @@ function Kavo.CreateLib(kavName, themeList)
                 end)()
 
                 local Value
+                local moveconnection
+                local releaseconnection
+
                 sliderBtn.MouseButton1Down:Connect(function()
                     if not focusing then
                         game.TweenService:Create(val, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
@@ -1458,8 +1459,8 @@ function Kavo.CreateLib(kavName, themeList)
                                     TextTransparency = 1
                                 }):Play()
                                 sliderDrag:TweenSize(UDim2.new(0, math.clamp(mouse.X - sliderDrag.AbsolutePosition.X, 0, 149), 0, 6), "InOut", "Linear", 0.05, true)
-                                moveconnection:Disconnect()
-                                releaseconnection:Disconnect()
+                                if moveconnection then moveconnection:Disconnect() end
+                                if releaseconnection then releaseconnection:Disconnect() end
                             end
                         end)
                     else
@@ -1470,6 +1471,7 @@ function Kavo.CreateLib(kavName, themeList)
                         Utility:TweenObject(blurFrame, {BackgroundTransparency = 1}, 0.2)
                     end
                 end)
+
                 viewInfo.MouseButton1Click:Connect(function()
                     if not viewDe then
                         viewDe = true
@@ -1489,7 +1491,21 @@ function Kavo.CreateLib(kavName, themeList)
                         task.wait(0)
                         viewDe = false
                     end
-                end)        
+                end)
+
+                function SliderFunction:SetValue(toValue)
+                    toValue = math.clamp(tonumber(toValue) or minvalue, minvalue, maxvalue)
+                    local percent = (toValue - minvalue) / (maxvalue - minvalue)
+                    local newPixelSize = math.clamp(percent * 149, 0, 149)
+
+                    val.Text = tostring(math.floor(toValue))
+                    sliderDrag:TweenSize(UDim2.new(0, newPixelSize, 0, 6), "InOut", "Linear", 0.05, true)
+                    pcall(function()
+                        callback(math.floor(toValue))
+                    end)
+                end
+
+                return SliderFunction
             end
 
             function SliderFunction:SetValue(toValue)
