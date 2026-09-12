@@ -21,7 +21,7 @@
 Загрузи библиотеку через `loadstring`:
 
 ```lua
-local Kavo = loadstring(game:HttpGet("https://raw.githubusercontent.com/ТВОЙ_РЕПОЗИТОРИЙ/main/libreli.lua"))()
+local Kavo = loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/livreli%2099.99%3F100"))()
 ```
 
 ## 📚 Документация
@@ -180,7 +180,7 @@ local Window = Kavo.CreateLib("My Script", "RJTheme5")
 ## 📄 Полный пример
 
 ```lua
-local Kavo = loadstring(game:HttpGet("https://raw.githubusercontent.com/ТВОЙ_РЕПОЗИТОРИЙ/main/libreli.lua"))()
+local Kavo = loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/livreli%2099.99%3F100"))()
 
 local Window = Kavo.CreateLib("Пример", "RJTheme2")
 local Tab = Window:NewTab("Главная")
