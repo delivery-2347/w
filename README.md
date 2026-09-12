@@ -1,349 +1,197 @@
-# 🌌 Kavo UI Library
+# 🎛️ Kavo UI Library
 
-Простая и удобная UI-библиотека для Roblox с современным интерфейсом и готовыми элементами управления.
-
-## 📦 Подключение
-
-```lua
-local Kavo = loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/super%20puper%20optimezison"))()
-```
-
-## 🚀 Создание окна
-
-```lua
-local Window = Kavo.CreateLib("My Script", "RJTheme1")
-```
-
-Первый параметр — название окна.
-
-Второй — тема оформления.
-
-## 🎨 Темы
-
-В библиотеке доступны:
-
-```text
-RJTheme1
-RJTheme2
-RJTheme3
-RJTheme4
-RJTheme5
-RJTheme6
-RJTheme7
-RJTheme8
-```
-
-Например:
-
-```lua
-local Window = Kavo.CreateLib("My Script", "RJTheme4")
-```
+**Kavo** — лёгкая библиотека интерфейсов для скриптов Roblox с перетаскиваемым окном, боковыми вкладками, секциями и полным набором элементов управления: кнопки, тогглы, слайдеры, дропдауны, кейбинды, цветовой пикер и текстовые поля.
 
 ---
 
-# 📁 Tabs и Sections
+## ✨ Возможности
 
-### Создание вкладки
-
-```lua
-local Tab = Window:NewTab("Main")
-```
-
-### Создание секции
-
-```lua
-local Section = Tab:NewSection("Settings")
-```
-
-После этого в секцию можно добавлять элементы.
+- **Перетаскиваемое окно** — заголовок можно тащить мышью в любую точку экрана (`Kavo:DraggingEnabled`).
+- **Тема на лету** — цвета фона, шапки, акцента, текста и элементов можно менять уже после создания окна через `Kavo:ChangeColor`.
+- **8 встроенных тем** (`RJTheme1`–`RJTheme8`) или полностью своя тема через Lua-таблицу.
+- **Вкладки и секции** — контент группируется по вкладкам (`NewTab`) и сворачиваемым секциям (`NewSection`).
+- **Полный набор элементов:** кнопка, текстбокс, тоггл, слайдер, дропдаун, кейбинд, цветовой пикер, лейбл.
+- **Автоскейл списка** — высота страницы и скролл пересчитываются автоматически при добавлении элементов.
+- **Показ/скрытие окна одной командой** — `Kavo:ToggleUI()`.
 
 ---
 
-# 🔘 Button
+## 📥 Установка
 
-Создание кнопки:
-
-```lua
-Section:NewButton("Click Me", "Описание кнопки", function()
-    print("Button clicked!")
-end)
-```
-
-При нажатии выполняется функция.
-
-### Изменение названия
-
-Кнопка возвращает объект, который можно использовать для изменения:
+Загрузи библиотеку через `loadstring`:
 
 ```lua
-local Button = Section:NewButton("Click Me", "Описание", function()
-    print("Hello")
-end)
-
-Button:UpdateButton("New Name")
+local Kavo = loadstring(game:HttpGet("https://raw.githubusercontent.com/ТВОЙ_РЕПОЗИТОРИЙ/main/libreli.lua"))()
 ```
 
----
+## 📚 Документация
 
-# 🔄 Toggle
+### 1. Создание окна
 
 ```lua
-Section:NewToggle("Enabled", "Включение функции", function(state)
-    print(state)
-end)
+local Window = Kavo.CreateLib("My Script Hub", "RJTheme3")
 ```
 
-`state` будет:
+- **1 аргумент** — название окна (строка).
+- **2 аргумент** — тема: имя встроенной темы (`"RJTheme1"`–`"RJTheme8"`) или таблица со своими цветами. Если не передать — используется тема по умолчанию.
+
+Своя тема (Custom Table):
 
 ```lua
-true
+local Window = Kavo.CreateLib("My Script", {
+    SchemeColor   = Color3.fromRGB(74, 99, 135),  -- акцентный цвет секций/тогглов
+    Background    = Color3.fromRGB(36, 37, 43),   -- фон правой части окна
+    Header        = Color3.fromRGB(28, 29, 34),   -- фон шапки и левой панели
+    TextColor     = Color3.fromRGB(255, 255, 255),-- цвет текста
+    ElementColor  = Color3.fromRGB(32, 32, 38)    -- фон кнопок/тогглов/слайдеров
+})
 ```
 
-или
+Незаполненные поля темы автоматически подставляются из значений по умолчанию.
+
+### 2. Смена темы после создания
+
+Цвета можно менять в реальном времени, не пересоздавая окно:
 
 ```lua
-false
+Kavo:ChangeColor("Background", Color3.fromRGB(0, 0, 0))
+Kavo:ChangeColor("Header", Color3.fromRGB(0, 0, 0))
+Kavo:ChangeColor("SchemeColor", Color3.fromRGB(255, 0, 0))
+Kavo:ChangeColor("TextColor", Color3.fromRGB(255, 255, 255))
+Kavo:ChangeColor("ElementColor", Color3.fromRGB(20, 20, 20))
 ```
 
-# 🎚️ Slider
+Допустимые ключи: `"Background"`, `"Header"`, `"SchemeColor"`, `"TextColor"`, `"ElementColor"`.
 
-```lua
-Section:NewSlider("Speed", "Скорость", 100, 0, function(value)
-    print(value)
-end)
-```
-
-Здесь:
-
-```text
-100 = максимальное значение
-0   = минимальное значение
-```
-
-При изменении slider в callback передаётся новое значение.
-
----
-
-# 📝 TextBox
-
-```lua
-Section:NewTextBox("Username", "Введите текст", function(text)
-    print(text)
-end)
-```
-
-После ввода текста он передаётся в callback.
-
----
-
-# 📋 Dropdown
-
-```lua
-Section:NewDropdown(
-    "Mode",
-    "Выберите режим",
-    {"Normal", "Fast", "Slow"},
-    function(value)
-        print(value)
-    end
-)
-```
-
-При выборе элемента callback получает выбранное значение.
-
----
-
-# ⌨️ Keybind
-
-```lua
-Section:NewKeybind(
-    "Toggle UI",
-    "Клавиша для переключения",
-    Enum.KeyCode.RightShift,
-    function(key)
-        print(key)
-    end
-)
-```
-
-Пользователь может изменить клавишу прямо через интерфейс.
-
----
-
-# 🌈 Color Picker
-
-```lua
-Section:NewColorPicker(
-    "Color",
-    "Выберите цвет",
-    Color3.fromRGB(255, 0, 0),
-    function(color)
-        print(color)
-    end
-)
-```
-
-Callback получает выбранный `Color3`.
-
----
-
-# 🖥️ Управление интерфейсом
-
-Скрыть или показать интерфейс:
+### 3. Показать/скрыть окно
 
 ```lua
 Kavo:ToggleUI()
 ```
 
-Каждый вызов переключает состояние интерфейса.
+### 4. Вкладки
+
+```lua
+local Tab = Window:NewTab("Основное")
+```
+
+### 5. Секции
+
+```lua
+local Section = Tab:NewSection("Настройки", false)
+```
+
+- **1 аргумент** — название секции.
+- **2 аргумент** — `hidden` (`true`/`false`): скрыть заголовок секции.
 
 ---
 
-# 🎨 Изменение цвета
+## 🧩 Элементы
 
-Цвета интерфейса можно менять во время работы:
-
-```lua
-Kavo:ChangeColor("SchemeColor", Color3.fromRGB(255, 0, 0))
-```
-
-Доступные основные параметры:
-
-```text
-SchemeColor
-Background
-Header
-TextColor
-ElementColor
-```
-
-Например:
+**Кнопка**
 
 ```lua
-Kavo:ChangeColor(
-    "ElementColor",
-    Color3.fromRGB(40, 40, 40)
-)
+Section:NewButton("Нажми меня", "Подсказка при наведении", function()
+    print("Кнопка нажата")
+end)
+```
+
+**Текстовое поле**
+
+```lua
+Section:NewTextBox("Ник", "Введите значение", function(text)
+    print("Введено:", text)
+end)
+```
+
+**Тоггл**
+
+```lua
+local Toggle = Section:NewToggle("Автофарм", "Подсказка", function(state)
+    print("Тоггл:", state)
+end)
+
+-- Обновить текст/состояние тоггла позже:
+Toggle:UpdateToggle("Новое имя", true)
+```
+
+**Слайдер**
+
+```lua
+Section:NewSlider("Скорость", "Подсказка", 100, 0, function(value)
+    print("Значение:", value)
+end)
+```
+
+- Аргументы: имя, подсказка, **максимум**, **минимум**, callback.
+
+**Дропдаун**
+
+```lua
+Section:NewDropdown("Режим", "Выберите режим", {"Лёгкий", "Средний", "Сложный"}, function(selected)
+    print("Выбрано:", selected)
+end)
+```
+
+**Кейбинд**
+
+```lua
+Section:NewKeybind("Открыть меню", "Подсказка", Enum.KeyCode.RightShift, function()
+    print("Клавиша нажата")
+end)
+```
+
+**Цветовой пикер**
+
+```lua
+Section:NewColorPicker("Цвет ESP", "Подсказка", Color3.fromRGB(255, 0, 0), function(color)
+    print("Цвет:", color)
+end)
+```
+
+**Лейбл**
+
+```lua
+local Label = Section:NewLabel("Просто текст")
+
+-- Обновить текст позже:
+Label:UpdateLabel("Новый текст")
 ```
 
 ---
 
-# 📌 Полный пример
+## 🎨 Встроенные темы
+
+`RJTheme1`, `RJTheme2`, `RJTheme3`, `RJTheme4`, `RJTheme5`, `RJTheme6`, `RJTheme7`, `RJTheme8`
+
+Передаются строкой вторым аргументом в `Kavo.CreateLib`:
 
 ```lua
-local Kavo = loadstring(game:HttpGet(
-    "https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/super%20puper%20optimezison"
-))()
-
-local Window = Kavo.CreateLib("My Script", "RJTheme1")
-
-local Main = Window:NewTab("Main")
-local Section = Main:NewSection("Settings")
-
-Section:NewButton("Hello", "Нажми на кнопку", function()
-    print("Hello!")
-end)
-
-Section:NewToggle("Enabled", "Включить функцию", function(state)
-    print("Enabled:", state)
-end)
-
-Section:NewSlider("Speed", "Настройка скорости", 100, 0, function(value)
-    print("Speed:", value)
-end)
-
-Section:NewTextBox("Text", "Введите текст", function(text)
-    print("Text:", text)
-end)
-
-Section:NewDropdown(
-    "Mode",
-    "Выберите режим",
-    {"Normal", "Fast", "Slow"},
-    function(value)
-        print("Mode:", value)
-    end
-)
-
-Section:NewKeybind(
-    "Keybind",
-    "Выберите клавишу",
-    Enum.KeyCode.RightShift,
-    function(key)
-        print("Key:", key)
-    end
-)
-
-Section:NewColorPicker(
-    "Color",
-    "Выберите цвет",
-    Color3.fromRGB(255, 0, 0),
-    function(color)
-        print("Color:", color)
-    end
-)
+local Window = Kavo.CreateLib("My Script", "RJTheme5")
 ```
 
 ---
 
-## 📚 API
+## 📄 Полный пример
 
-| Метод              | Назначение                |
-| ------------------ | ------------------------- |
-| `CreateLib()`      | Создать интерфейс         |
-| `NewTab()`         | Создать вкладку           |
-| `NewSection()`     | Создать секцию            |
-| `NewButton()`      | Создать кнопку            |
-| `NewToggle()`      | Создать переключатель     |
-| `NewSlider()`      | Создать slider            |
-| `NewTextBox()`     | Создать поле ввода        |
-| `NewDropdown()`    | Создать список            |
-| `NewKeybind()`     | Создать клавишу           |
-| `NewColorPicker()` | Создать выбор цвета       |
-| `ToggleUI()`       | Показать/скрыть интерфейс |
-| `ChangeColor()`    | Изменить цвет интерфейса  |
+```lua
+local Kavo = loadstring(game:HttpGet("https://raw.githubusercontent.com/ТВОЙ_РЕПОЗИТОРИЙ/main/libreli.lua"))()
 
+local Window = Kavo.CreateLib("Пример", "RJTheme2")
+local Tab = Window:NewTab("Главная")
+local Section = Tab:NewSection("Настройки")
 
+Section:NewButton("Приветствие", "Нажми меня", function()
+    print("Привет!")
+end)
 
+Section:NewToggle("Автофарм", "Вкл/выкл фарм", function(state)
+    print("Автофарм:", state)
+end)
 
+Section:NewSlider("Громкость", "От 0 до 100", 100, 0, function(value)
+    print("Громкость:", value)
+end)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-YA UZE NA RABUTOY NA ETU BILIATEKU NEZNAY NA ABNAVLENII BOLISE NE BUDET BB
+Kavo:ChangeColor("SchemeColor", Color3.fromRGB(255, 60, 60))
+```
