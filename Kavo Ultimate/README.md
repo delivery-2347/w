@@ -10,11 +10,11 @@
 
 ### Вариант 1 — загрузка с GitHub
 
-Если файл `Kavo_Ultimate.lua` лежит в корне ветки `main` репозитория `delivery-2347/w`, загрузи его так:
+Если файл `Kavo_Ultimate.lua` лежит в корне ветки `Kavo Ultimate` репозитория `delivery-2347/w`, загрузи его так:
 
 ```lua
 local Kavo = loadstring(game:HttpGet(
-    "https://raw.githubusercontent.com/delivery-2347/w/main/Kavo_Ultimate.lua"
+    "https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/Kavo%20Ultimate/Kavo%20Ultimate"
 ))()
 ```
 
