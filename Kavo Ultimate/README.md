@@ -36,7 +36,7 @@ local Kavo = require(game:GetService("ReplicatedStorage"):WaitForChild("KavoUlti
 
 ```lua
 local Kavo = loadstring(game:HttpGet(
-    "https://raw.githubusercontent.com/delivery-2347/w/main/Kavo_Ultimate.lua"
+    "https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/Kavo%20Ultimate/Kavo%20Ultimate"
 ))()
 
 local Window = Kavo.CreateLib("My Hub", "RJTheme6")
@@ -311,7 +311,7 @@ Kavo:Destroy()
 
 ```lua
 local Kavo = loadstring(game:HttpGet(
-    "https://raw.githubusercontent.com/delivery-2347/w/main/Kavo_Ultimate.lua"
+    "https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/Kavo%20Ultimate/Kavo%20Ultimate"
 ))()
 
 local Window = Kavo.CreateLib("CUCUMBER HUB", "RJTheme6")
