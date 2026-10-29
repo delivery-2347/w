@@ -24,7 +24,7 @@
 Загрузи библиотеку через `loadstring` (замени ссылку на то, куда сам зальёшь `Kavo.lua`):
 
 ```lua
-local Kavo = loadstring(game:HttpGet("https://raw.githubusercontent.com/<твой-репозиторий>/Kavo.lua"))()
+local Kavo = loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/Kavo/Kavo"))()
 ```
 
 ## 📚 Документация
@@ -189,7 +189,7 @@ local Window = Kavo.CreateLib("My Script", "RJTheme5")
 ## 📄 Полный пример
 
 ```lua
-local Kavo = loadstring(game:HttpGet("https://raw.githubusercontent.com/<твой-репозиторий>/Kavo.lua"))()
+local Kavo = loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/Kavo/Kavo"))()
 
 local Window = Kavo.CreateLib("Пример", "RJTheme2")
 local Tab = Window:NewTab("Главная")
