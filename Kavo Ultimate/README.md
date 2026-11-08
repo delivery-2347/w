@@ -13,9 +13,7 @@
 Если файл `Kavo_Ultimate.lua` лежит в корне ветки `Kavo Ultimate` репозитория `delivery-2347/w`, загрузи его так:
 
 ```lua
-local Kavo = loadstring(game:HttpGet(
-    "https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/Kavo%20Ultimate/Kavo%20Ultimate"
-))()
+local Kavo = loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/Kavo%20Ultimate/Kavo%20Ultimate"))()
 ```
 
 Если ты сохранил файл в другом месте или под другим названием, замени URL на адрес своего raw-файла.
@@ -35,9 +33,7 @@ local Kavo = require(game:GetService("ReplicatedStorage"):WaitForChild("KavoUlti
 ## Первый интерфейс за минуту
 
 ```lua
-local Kavo = loadstring(game:HttpGet(
-    "https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/Kavo%20Ultimate/Kavo%20Ultimate"
-))()
+local Kavo = loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/Kavo%20Ultimate/Kavo%20Ultimate"))()
 
 local Window = Kavo.CreateLib("My Hub", "RJTheme6")
 
@@ -82,10 +78,7 @@ local Other = PlayerTab:NewSection("Другое", true)
 Код в callback выполняется при нажатии кнопки.
 
 ```lua
-local ActionButton = Movement:NewButton(
-    "Обновить",
-    "Перезапустить выбранное действие",
-    function()
+local ActionButton = Movement:NewButton("Обновить", "Перезапустить выбранное действие", function()
         print("Обновление запущено")
     end
 )
@@ -101,10 +94,7 @@ ActionButton:UpdateButton("Обновить сейчас")
 Callback получает `true`, когда переключатель включён, и `false`, когда выключен.
 
 ```lua
-local AutoToggle = Movement:NewToggle(
-    "Автоматическое действие",
-    "Запускает или останавливает действие",
-    function(enabled)
+local AutoToggle = Movement:NewToggle("Автоматическое действие", "Запускает или останавливает действие", function(enabled)
         if enabled then
             print("Включено")
         else
@@ -131,12 +121,7 @@ AutoToggle:UpdateToggle("Авто-режим", false)
 У слайдера параметры расположены в старом порядке Kavo: **максимум, затем минимум**.
 
 ```lua
-local SpeedSlider = Movement:NewSlider(
-    "Скорость",
-    "Выбери значение от 0 до 100",
-    100, -- максимум
-    0,   -- минимум
-    function(value)
+local SpeedSlider = Movement:NewSlider("Скорость", "Выбери значение от 0 до 100", 100, --[[максимум]] 0, --[[минимум]] function(value)
         print("Новая скорость:", value)
     end
 )
@@ -158,10 +143,7 @@ Callback срабатывает, когда пользователь вводи�
 ```lua
 local playerName = ""
 
-local NameBox = Movement:NewTextBox(
-    "Имя игрока",
-    "Введи имя и нажми Enter",
-    function(text)
+local NameBox = Movement:NewTextBox("Имя игрока", "Введи имя и нажми Enter", function(text)
         playerName = text
         print("Введено:", playerName)
     end
@@ -182,11 +164,7 @@ NameBox:SetName("Новый заголовок")
 Callback получает выбранный пункт как строку.
 
 ```lua
-local ModeDropdown = Movement:NewDropdown(
-    "Режим",
-    "Выбери режим работы",
-    {"Обычный", "Быстрый", "Точный"},
-    function(selected)
+local ModeDropdown = Movement:NewDropdown("Режим", "Выбери режим работы", {"Обычный", "Быстрый", "Точный"}, function(selected)
         print("Выбран режим:", selected)
     end
 )
@@ -200,11 +178,7 @@ ModeDropdown:Refresh({"Режим A", "Режим B", "Режим C"})
 Четвёртый аргумент — функция, которая вызывается при нажатии назначенной клавиши. Пользователь может изменить клавишу, нажав на сам элемент и затем на новую клавишу.
 
 ```lua
-Movement:NewKeybind(
-    "Переключить меню",
-    "Нажми элемент, чтобы назначить другую клавишу",
-    Enum.KeyCode.RightShift,
-    function()
+Movement:NewKeybind("Переключить меню", "Нажми элемент, чтобы назначить другую клавишу", Enum.KeyCode.RightShift, function()
         Kavo:ToggleUI()
     end
 )
@@ -217,13 +191,8 @@ Movement:NewKeybind(
 Callback получает выбранный цвет в виде `Color3`.
 
 ```lua
-Movement:NewColorPicker(
-    "Цвет эффекта",
-    "Выбери цвет",
-    Color3.fromRGB(60, 200, 120),
-    function(color)
-        print("RGB:", color.R, color.G, color.B)
-        -- Пример: effectPart.Color = color
+Movement:NewColorPicker("Цвет эффекта", "Выбери цвет", Color3.fromRGB(60, 200, 120), function(color)
+        print("RGB:", color.R, color.G, color.B) -- Пример: effectPart.Color = color
     end
 )
 ```
